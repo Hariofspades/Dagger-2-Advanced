@@ -1,5 +1,6 @@
 package com.hariofspades.dagger2advanced;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +12,13 @@ import com.google.gson.GsonBuilder;
 import com.hariofspades.dagger2advanced.adapter.RandomUserAdapter;
 import com.hariofspades.dagger2advanced.interfaces.RandomUsersApi;
 import com.hariofspades.dagger2advanced.model.RandomUsers;
+import com.jakewharton.picasso.OkHttp3Downloader;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -27,16 +34,25 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RandomUserAdapter mAdapter;
 
+    Context context;
+    Picasso picasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+        context = this;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
         Timber.plant(new Timber.DebugTree());
+
+        File cacheFile = new File(context.getCacheDir(), "HttpCache");
+        cacheFile.mkdirs();
+
+        Cache cache = new Cache(cacheFile, 10 * 1000 * 1000); //10 MB
 
         HttpLoggingInterceptor httpLoggingInterceptor = new
                 HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
@@ -48,10 +64,16 @@ public class MainActivity extends AppCompatActivity {
 
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+
         OkHttpClient okHttpClient = new OkHttpClient()
                 .newBuilder()
+                .cache(cache)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
+
+        OkHttp3Downloader okHttpDownloader = new OkHttp3Downloader(okHttpClient);
+
+        picasso = new Picasso.Builder(context).downloader(okHttpDownloader).build();
 
         retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
@@ -74,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RandomUsers> call, @NonNull Response<RandomUsers> response) {
                 if(response.isSuccessful()) {
-                    mAdapter = new RandomUserAdapter(MainActivity.this);
+                    mAdapter = new RandomUserAdapter(MainActivity.this, picasso);
                     mAdapter.setItems(response.body().getResults());
                     recyclerView.setAdapter(mAdapter);
                 }
