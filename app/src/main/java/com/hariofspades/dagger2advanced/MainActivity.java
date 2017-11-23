@@ -10,8 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hariofspades.dagger2advanced.adapter.RandomUserAdapter;
+import com.hariofspades.dagger2advanced.component.DaggerRandomUserComponent;
+import com.hariofspades.dagger2advanced.component.RandomUserComponent;
 import com.hariofspades.dagger2advanced.interfaces.RandomUsersApi;
 import com.hariofspades.dagger2advanced.model.RandomUsers;
+import com.hariofspades.dagger2advanced.module.ContextModule;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -37,13 +40,30 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     Picasso picasso;
 
+    RandomUsersApi randomUsersApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
         context = this;
+        //beforeDagger2();
+        afterDagger();
+        populateUsers();
 
+    }
+
+    public void afterDagger() {
+        RandomUserComponent daggerRandomUserComponent = DaggerRandomUserComponent.builder()
+                .contextModule(new ContextModule(this))
+                .build();
+        picasso = daggerRandomUserComponent.getPicasso();
+        randomUsersApi = daggerRandomUserComponent.getRandomUserService();
+
+    }
+
+    private void beforeDagger2() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
@@ -80,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("https://randomuser.me/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
-        populateUsers();
-
     }
 
     private void initViews() {
@@ -110,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public RandomUsersApi getRandomUserService(){
-        return retrofit.create(RandomUsersApi.class);
+        return randomUsersApi;
     }
 
 
