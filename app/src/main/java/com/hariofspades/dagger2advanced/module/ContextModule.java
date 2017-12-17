@@ -3,6 +3,7 @@ package com.hariofspades.dagger2advanced.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.hariofspades.dagger2advanced.interfaces.ApplicationContext;
 import com.hariofspades.dagger2advanced.interfaces.RandomUserApplicationScope;
 
 import javax.inject.Named;
@@ -22,7 +23,7 @@ public class ContextModule {
         this.context = context;
     }
 
-    @Named("application_context")
+    @ApplicationContext
     @RandomUserApplicationScope
     @Provides
     public Context context(){ return context.getApplicationContext(); }

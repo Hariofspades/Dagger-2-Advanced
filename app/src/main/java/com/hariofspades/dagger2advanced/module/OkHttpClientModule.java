@@ -2,6 +2,7 @@ package com.hariofspades.dagger2advanced.module;
 
 import android.content.Context;
 
+import com.hariofspades.dagger2advanced.interfaces.ApplicationContext;
 import com.hariofspades.dagger2advanced.interfaces.RandomUserApplicationScope;
 
 import java.io.File;
@@ -38,7 +39,7 @@ public class OkHttpClientModule {
 
     @Provides
     @RandomUserApplicationScope
-    public File file(@Named("application_context") Context context){
+    public File file(@ApplicationContext Context context){
         File file = new File(context.getCacheDir(), "HttpCache");
         file.mkdirs();
         return file;
