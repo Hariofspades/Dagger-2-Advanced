@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RandomUsers> call, @NonNull Response<RandomUsers> response) {
                 if(response.isSuccessful()) {
-                    mAdapter = new RandomUserAdapter(MainActivity.this);
+                    mAdapter = new RandomUserAdapter();
                     mAdapter.setItems(response.body().getResults());
                     recyclerView.setAdapter(mAdapter);
                 }
