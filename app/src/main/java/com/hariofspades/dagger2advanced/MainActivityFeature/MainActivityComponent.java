@@ -1,5 +1,6 @@
 package com.hariofspades.dagger2advanced.MainActivityFeature;
 
+import com.hariofspades.dagger2advanced.MainActivity;
 import com.hariofspades.dagger2advanced.adapter.RandomUserAdapter;
 import com.hariofspades.dagger2advanced.component.RandomUserComponent;
 import com.hariofspades.dagger2advanced.interfaces.RandomUsersApi;
@@ -13,8 +14,6 @@ import dagger.Component;
 @MainActivityScope
 public interface MainActivityComponent {
 
-    RandomUserAdapter getRandomUserAdapter();
-
-    RandomUsersApi getRandomUserService();
+    void injectMainActivity(MainActivity mainActivity);
 
 }
