@@ -18,7 +18,13 @@ public class Location {
     private String state;
     @SerializedName("postcode")
     @Expose
-    private Integer postcode;
+    private String postcode;
+    @SerializedName("coordinates")
+    @Expose
+    private Coordinates coordinates;
+    @SerializedName("timezone")
+    @Expose
+    private Timezone timezone;
 
     public String getStreet() {
         return street;
@@ -44,17 +50,25 @@ public class Location {
         this.state = state;
     }
 
-    public Integer getPostcode() {
+    public String getPostcode() {
         return postcode;
     }
 
-    public void setPostcode(Integer postcode) {
+    public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
+    public void setCoordinates(Coordinates coordinates) { this.coordinates = coordinates; }
+
+    public Coordinates getCoordinates() { return this.coordinates; }
+
+    public void setTimezone(Timezone timezone) { this.timezone = timezone; }
+
+    public Timezone getTimezone () { return this.timezone; }
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("street", street).append("city", city).append("state", state).append("postcode", postcode).toString();
+        return new ToStringBuilder(this).append("street", street).append("city", city).append("state", state).append("postcode", postcode).append("coordinates", coordinates).append("timezone", timezone).toString();
     }
 
 }

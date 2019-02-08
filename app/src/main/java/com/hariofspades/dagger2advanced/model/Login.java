@@ -7,6 +7,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Login {
 
+    @SerializedName("uuid")
+    @Expose
+    private String uuid;
     @SerializedName("username")
     @Expose
     private String username;
@@ -25,6 +28,10 @@ public class Login {
     @SerializedName("sha256")
     @Expose
     private String sha256;
+
+    public String getUuid() { return this.uuid; }
+
+    public void setUuid(String uuid) { this.uuid = uuid; }
 
     public String getUsername() {
         return username;
